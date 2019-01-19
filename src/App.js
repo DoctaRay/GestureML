@@ -2,9 +2,15 @@ import React, { Component } from 'react';
 import { Grid, Row, Col } from 'react-bootstrap';
 import Button from '@material-ui/core/Button';
 import Webcam from 'react-webcam';
+import {Animated} from 'react-animated-css';
+import Countdown from 'react-countdown-now'
+
+import TitleIm from './icon-left-font.png';
 
 // import logo from './logo.svg';
 import './App.css';
+
+const objects = ["star", "tree", "worm", "dog"];
 
 const options = {
   controls: true,
@@ -25,40 +31,49 @@ const options = {
 };
 
 class App extends Component {
-  componentDidMount() {
-    const { videojs } = window;
-    this.player = videojs('recorder', options);
-
-    // error handling
-    this.player.on('deviceError', function() {
-      console.warn('device error:', this.player.deviceErrorCode);
-    });
-    this.player.on('error', function(error) {
-      console.log('error:', error);
-    });
-    // user clicked the record button and started recording
-    this.player.on('startRecord', this.handleStart);
-    // user completed recording and stream is available
-    this.player.on('finishRecord', this.handleFinish);
+  constructor(props) {
+    super(props);
+    this.state = {
+      object: "",
+    }
   }
-
-  handleStart = console.log;
-  handleFinish = console.log;
-
-  componentWillUnmount() {
-    const { player } = this;
-    if (player) player.dispose();
-  }
+  // componentDidMount() {
+  //   const { videojs } = window;
+  //   this.player = videojs('recorder', options);
+  //
+  //   // error handling
+  //   this.player.on('deviceError', function() {
+  //     console.warn('device error:', this.player.deviceErrorCode);
+  //   });
+  //   this.player.on('error', function(error) {
+  //     console.log('error:', error);
+  //   });
+  //   // user clicked the record button and started recording
+  //   this.player.on('startRecord', this.handleStart);
+  //   // user completed recording and stream is available
+  //   this.player.on('finishRecord', this.handleFinish);
+  // }
+  //
+  // handleStart = console.log;
+  // handleFinish = console.log;
+  //
+  // componentWillUnmount() {
+  //   const { player } = this;
+  //   if (player) player.dispose();
+  // }
 
   setRef = webcam => {
     this.webcam = webcam;
   };
-  //
-  // capture = () => {
-  //   console.log
-  //   const imageSrc = this.webcam.getScreenshot();
-  // };
-  capture = console.log;
+
+  start = () => {
+    var l = objects[parseInt(Math.random() * objects.length)]
+    this.setState({
+      object: "Become a ... " + l,
+    })
+    const imageSrc = this.webcam.getScreenshot();
+  };
+
 
   render() {
     const videoConstraints = {
@@ -68,7 +83,10 @@ class App extends Component {
     };
     return (
       <div className="app">
-        <h1>title</h1>
+        {/* <img src={TitleIm} className="image" height="50%" width="100%" /> */}
+        <Animated animationIn="bounceInLeft" animationOut="fadeOut" isVisible={true}>
+        <h1 className='title'>Quick Reakt</h1>
+      </Animated>
         <Webcam
           audio={false}
           height={350}
@@ -77,11 +95,10 @@ class App extends Component {
           width={350}
           videoConstraints={videoConstraints}
         />
-        <button onClick={this.capture}>Capture photo</button>
-        <video id="recorder" className="video-js vjs-default-skin" />
-        <Button variant="contained" color="primary">
-          Take a picture!
-        </Button>
+        <Countdown date={Date.now() + 10000} />
+        <Button variant='contained' color='primary' onClick={this.start}>Start game</Button>
+        <h2>{this.state.object}</h2>
+         {/* <video id="recorder" className="video-js vjs-default-skin" /> */}
       </div>
     );
   }

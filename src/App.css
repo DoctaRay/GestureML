@@ -3,12 +3,18 @@ body {
   display: flex;
   flex-direction: column;
   align-items: stretch;
+  background-color: #ECE0E8;
+}
+
+.title {
+  font-family: 'Work Sans', sans-serif;
 }
 
 .app {
   display: flex;
   flex-direction: column;
   align-items: center;
+    background-color: "#ECE0E8"
 }
 
 .App-logo {

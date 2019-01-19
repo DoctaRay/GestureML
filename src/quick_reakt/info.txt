@@ -1,0 +1,14 @@
+
+Hope you enjoy your new logo, here are the people that
+made your beautiful logo happen :)
+
+font name: WorkSans-Light
+font link: https://fonts.google.com/specimen/Work+Sans
+font author: Wei Huang
+font author site: 
+
+icon designer: Vincent BARSE
+icon designer link: /Eyz4hu
+        
+{"bg":"#ECE0E8","icon-gradient-0":"#1E0B36","icon-gradient-1":"#CA3782","font":"#230A1B"}
+      
