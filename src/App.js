@@ -1,9 +1,12 @@
-import React, { Component } from 'react';
-import { Grid, Row, Col } from 'react-bootstrap';
+import React, { Component, createRef } from 'react';
 import Button from '@material-ui/core/Button';
 import Webcam from 'react-webcam';
-import {Animated} from 'react-animated-css';
-import Countdown from 'react-countdown-now'
+import Countdown from 'react-countdown-now';
+import { Animated } from 'react-animated-css';
+import { Grid, Row, Col } from 'react-bootstrap'
+
+import RandObject from './RandObject';
+import { Bucket } from './firebase';
 
 import ModalEx from './Components/Modal.js'
 
@@ -11,8 +14,6 @@ import TitleIm from './icon-left-font.png';
 
 // import logo from './logo.svg';
 import './App.css';
-
-const objects = ["star", "tree", "worm", "dog"];
 
 const options = {
   controls: true,
@@ -32,12 +33,26 @@ const options = {
   }
 };
 
+const videoConstraints = {
+  width: 1280,
+  height: 720,
+  facingMode: "user"
+};
+
+const objects = ["heart", "tree", "gun", "dog"];
+
+
 class App extends Component {
+  /** @type {Bucket} */
+  bucket;
+
   constructor(props) {
     super(props);
+    this.bucket = new Bucket();
+    this.webcam = createRef();
     this.state = {
-      object: "",
-    }
+      object:objects[parseInt(Math.random() * objects.length)]
+    };
   }
   // componentDidMount() {
   //   const { videojs } = window;
@@ -64,19 +79,24 @@ class App extends Component {
   //   if (player) player.dispose();
   // }
 
-  setRef = webcam => {
-    this.webcam = webcam;
-  };
+  start = async () => {
+    const image = this.webcam.current.getScreenshot();
+    const blob = image.substring(image.indexOf(',')+1);
 
-  start = () => {
-    var l = objects[parseInt(Math.random() * objects.length)]
+    try {
+      const snapshot = await this.bucket.upload(blob, this.state.object);
+      console.log(`Upload successful: ${snapshot.state}`);
+    } catch (error) {
+      console.error(`Something went wrong: ${JSON.stringify(error)}`);
+    }
+
     this.setState({
-      object: "Become a ... " + l,
+      object: objects[parseInt(Math.random() * objects.length)]
     })
     const imageSrc = this.webcam.getScreenshot();
   };
 
-  function show() => {
+  show = (props) => {
     if (this.state.show == false) {
       return (
         <Webcam
@@ -92,12 +112,9 @@ class App extends Component {
   }
 
 
+
   render() {
-    const videoConstraints = {
-      width: 1280,
-      height: 720,
-      facingMode: "user"
-    };
+
     return (
       <div className="app">
         <Grid>
@@ -118,8 +135,8 @@ class App extends Component {
                 <h3 className='explanation'>An AI-powered cherades game! Created at UofT Hacks VI!</h3>
         <Countdown date={Date.now() + 10000} />
         <Button variant='contained' color='primary' onClick={this.start}>Start game</Button>
-        <h2>{this.state.object}</h2>
-         {/* <video id="recorder" className="video-js vjs-default-skin" /> */}
+        <h2>Become a ... {this.state.object}</h2>
+        {/* <video id="recorder" className="video-js vjs-default-skin" /> */}
       </div>
     );
   }
