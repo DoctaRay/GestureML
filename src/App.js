@@ -1,12 +1,13 @@
 import React, { Component } from 'react';
+import { Grid, Row, Col } from 'react-bootstrap';
 
 // import logo from './logo.svg';
-// import './App.css';
+import './App.css';
 
 const options = {
   controls: true,
-  width: 320,
-  height: 240,
+  width: 320 * 2,
+  height: 240 * 2,
   fluid: false,
   controlBar: {
     volumePanel: false
@@ -50,7 +51,9 @@ class App extends Component {
   render() {
     return (
       <div className="app">
+        <h1>title</h1>
         <video id="recorder" className="video-js vjs-default-skin" />
+        <p>body</p>
       </div>
     );
   }

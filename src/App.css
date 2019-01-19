@@ -1,5 +1,14 @@
-.App {
-  text-align: center;
+body {
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+}
+
+.app {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
 .App-logo {
