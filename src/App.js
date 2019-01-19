@@ -102,9 +102,15 @@ class App extends Component {
   }
 
   countDown = () => {
+    if (this.state.worldTimer == 0) {
+      this.setState({
+        show: false,
+      })
+    } else {
     this.setState({
       worldTimer: this.state.worldTimer - 1,
     })
+  }
   }
 
   start = () => {
@@ -121,9 +127,11 @@ class App extends Component {
 
 
 
+
   render() {
     let player;
     let countdown;
+    let become;
     let starter;
     if (this.state.show == true) {
       player =
@@ -134,14 +142,15 @@ class App extends Component {
           screenshotFormat="image/jpeg"
           width={500}
           videoConstraints={videoConstraints}
-        />
+        />;
+        countdown =
+          <p> Take a picture within {this.state.worldTimer} seconds! </p>;
+        become = <h2>Become a ... {this.state.object}</h2>;
     }
-    else {
-      player = <p> That's it! </p>
-    }
-    if (this.state.countdowner == true) {
-          countdown =
-            <p> Take a picture within {this.state.worldTimer} seconds! </p>
+    else if (this.state.show == false){
+      player = <p></p>;
+      countdown = <p></p>;
+      become = <p></p>;
     }
 
     if (this.state.worldTimer == 0) {
@@ -172,8 +181,8 @@ class App extends Component {
         </div>
         {countdown}
         <h3 className='explanation'>An AI-powered cherades game! Created at UofT Hacks VI!</h3>
+        {become}
         <Button variant='contained' color='primary' onClick={this.start}>Start game</Button>
-        <h2>Become a ... {this.state.object}</h2>
         {/* <video id="recorder" className="video-js vjs-default-skin" /> */}
       </div>
     );
