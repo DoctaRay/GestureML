@@ -1,16 +1,12 @@
-import React, { Component } from 'react';
-import { Grid, Row, Col } from 'react-bootstrap';
+import React, { Component, createRef } from 'react';
 import Button from '@material-ui/core/Button';
 import Webcam from 'react-webcam';
-import {Animated} from 'react-animated-css';
-import Countdown from 'react-countdown-now'
+import Countdown from 'react-countdown-now';
+import { Animated } from 'react-animated-css';
 
-import TitleIm from './icon-left-font.png';
-
-// import logo from './logo.svg';
+import RandObject from './RandObject';
+import { Bucket } from './firebase';
 import './App.css';
-
-const objects = ["star", "tree", "worm", "dog"];
 
 const options = {
   controls: true,
@@ -30,12 +26,20 @@ const options = {
   }
 };
 
+const objects = ["heart", "tree", "gun", "dog"];
+
+
 class App extends Component {
+  /** @type {Bucket} */
+  bucket;
+  
   constructor(props) {
     super(props);
+    this.bucket = new Bucket();
+    this.webcam = createRef();
     this.state = {
-      object: "",
-    }
+      object:objects[parseInt(Math.random() * objects.length)]
+    };
   }
   // componentDidMount() {
   //   const { videojs } = window;
@@ -62,18 +66,21 @@ class App extends Component {
   //   if (player) player.dispose();
   // }
 
-  setRef = webcam => {
-    this.webcam = webcam;
-  };
+  start = async () => {
+    const image = this.webcam.current.getScreenshot();
+    const blob = image.substring(image.indexOf(',')+1);
 
-  start = () => {
-    var l = objects[parseInt(Math.random() * objects.length)]
+    try {
+      const snapshot = await this.bucket.upload(blob, this.state.object);
+      console.log(`Upload successful: ${snapshot.state}`);
+    } catch (error) {
+      console.error(`Something went wrong: ${JSON.stringify(error)}`);
+    }
+
     this.setState({
-      object: "Become a ... " + l,
+      object: objects[parseInt(Math.random() * objects.length)]
     })
-    const imageSrc = this.webcam.getScreenshot();
-  };
-
+  }
 
   render() {
     const videoConstraints = {
@@ -81,24 +88,25 @@ class App extends Component {
       height: 720,
       facingMode: "user"
     };
+
     return (
       <div className="app">
         {/* <img src={TitleIm} className="image" height="50%" width="100%" /> */}
         <Animated animationIn="bounceInLeft" animationOut="fadeOut" isVisible={true}>
-        <h1 className='title'>Quick Reakt</h1>
-      </Animated>
+          <h1 className='title'>Quick Reakt</h1>
+        </Animated>
         <Webcam
           audio={false}
-          height={350}
-          ref={this.setRef}
-          screenshotFormat="image/jpeg"
-          width={350}
+          width={1280}
+          height={720}
+          ref={this.webcam}
           videoConstraints={videoConstraints}
+          style={{ width: 888, height: 500 }}
         />
         <Countdown date={Date.now() + 10000} />
         <Button variant='contained' color='primary' onClick={this.start}>Start game</Button>
-        <h2>{this.state.object}</h2>
-         {/* <video id="recorder" className="video-js vjs-default-skin" /> */}
+        <h2>Become a ... {this.state.object}</h2>
+        {/* <video id="recorder" className="video-js vjs-default-skin" /> */}
       </div>
     );
   }
