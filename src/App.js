@@ -5,6 +5,8 @@ import Webcam from 'react-webcam';
 import {Animated} from 'react-animated-css';
 import Countdown from 'react-countdown-now'
 
+import ModalEx from './Components/Modal.js'
+
 import TitleIm from './icon-left-font.png';
 
 // import logo from './logo.svg';
@@ -74,6 +76,21 @@ class App extends Component {
     const imageSrc = this.webcam.getScreenshot();
   };
 
+  function show() => {
+    if (this.state.show == false) {
+      return (
+        <Webcam
+          audio={false}
+          height={350}
+          ref={this.setRef}
+          screenshotFormat="image/jpeg"
+          width={350}
+          videoConstraints={videoConstraints}
+        />
+      )
+    }
+  }
+
 
   render() {
     const videoConstraints = {
@@ -83,18 +100,22 @@ class App extends Component {
     };
     return (
       <div className="app">
+        <Grid>
+          <Row>
+            <Col>
+          <ModalEx />
+          </Col>
+          <Col>
+          </Col>
+          <Col>
+          </Col>
+          </Row>
+        </Grid>
         {/* <img src={TitleIm} className="image" height="50%" width="100%" /> */}
         <Animated animationIn="bounceInLeft" animationOut="fadeOut" isVisible={true}>
         <h1 className='title'>Quick Reakt</h1>
       </Animated>
-        <Webcam
-          audio={false}
-          height={350}
-          ref={this.setRef}
-          screenshotFormat="image/jpeg"
-          width={350}
-          videoConstraints={videoConstraints}
-        />
+                <h3 className='explanation'>An AI-powered cherades game! Created at UofT Hacks VI!</h3>
         <Countdown date={Date.now() + 10000} />
         <Button variant='contained' color='primary' onClick={this.start}>Start game</Button>
         <h2>{this.state.object}</h2>

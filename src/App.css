@@ -6,8 +6,19 @@ body {
   background-color: #ECE0E8;
 }
 
+.modal {
+  margin: 5px 5px 5px 5px;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+}
+
 .title {
   font-family: 'Work Sans', sans-serif;
+}
+
+.explanation {
+  font-family: 'Bungee', cursive;
 }
 
 .app {
