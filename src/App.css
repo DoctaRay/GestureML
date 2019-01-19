@@ -56,3 +56,8 @@ body {
     transform: rotate(360deg);
   }
 }
+
+.player {
+  border-radius: 25px;
+  overflow: hidden;
+}

@@ -41,6 +41,9 @@ const videoConstraints = {
 
 const objects = ["heart", "tree", "gun", "dog"];
 
+let some;
+let check;
+
 
 class App extends Component {
   /** @type {Bucket} */
@@ -51,8 +54,12 @@ class App extends Component {
     this.bucket = new Bucket();
     this.webcam = createRef();
     this.state = {
-      object:objects[parseInt(Math.random() * objects.length)]
+      object: objects[parseInt(Math.random() * objects.length)],
+      show: false,
+      countdowner: false,
+      worldTimer: 3,
     };
+    check = (this.state.worldTimer == 0) ? true : false;
   }
   // componentDidMount() {
   //   const { videojs } = window;
@@ -79,9 +86,12 @@ class App extends Component {
   //   if (player) player.dispose();
   // }
 
-  start = async () => {
+
+
+  takePicture = async () => {
     const image = this.webcam.current.getScreenshot();
     const blob = image.substring(image.indexOf(',')+1);
+    const imageSrc = this.webcam.getScreenshot();
 
     try {
       const snapshot = await this.bucket.upload(blob, this.state.object);
@@ -89,31 +99,56 @@ class App extends Component {
     } catch (error) {
       console.error(`Something went wrong: ${JSON.stringify(error)}`);
     }
+  }
 
+  countDown = () => {
     this.setState({
-      object: objects[parseInt(Math.random() * objects.length)]
+      worldTimer: this.state.worldTimer - 1,
     })
-    const imageSrc = this.webcam.getScreenshot();
+  }
+
+  start = () => {
+    this.setState({
+    object: objects[parseInt(Math.random() * objects.length)],
+    show: true,
+    countdowner: true,
+  })
+
+    some = setInterval(this.countDown, 1000);
+
   };
 
-  show = (props) => {
-    if (this.state.show == false) {
-      return (
-        <Webcam
-          audio={false}
-          height={350}
-          ref={this.setRef}
-          screenshotFormat="image/jpeg"
-          width={350}
-          videoConstraints={videoConstraints}
-        />
-      )
-    }
-  }
 
 
 
   render() {
+    let player;
+    let countdown;
+    let starter;
+    if (this.state.show == true) {
+      player =
+        <Webcam
+          audio={false}
+          height={285}
+          ref={this.setRef}
+          screenshotFormat="image/jpeg"
+          width={500}
+          videoConstraints={videoConstraints}
+        />
+    }
+    else {
+      player = <p> That's it! </p>
+    }
+    if (this.state.countdowner == true) {
+          countdown =
+            <p> Take a picture within {this.state.worldTimer} seconds! </p>
+    }
+
+    if (this.state.worldTimer == 0) {
+      clearInterval(some);
+    }
+
+
 
     return (
       <div className="app">
@@ -130,10 +165,13 @@ class App extends Component {
         </Grid>
         {/* <img src={TitleIm} className="image" height="50%" width="100%" /> */}
         <Animated animationIn="bounceInLeft" animationOut="fadeOut" isVisible={true}>
-        <h1 className='title'>Quick Reakt</h1>
-      </Animated>
-                <h3 className='explanation'>An AI-powered cherades game! Created at UofT Hacks VI!</h3>
-        <Countdown date={Date.now() + 10000} />
+          <h1 className='title'>Quick Reakt</h1>
+        </Animated>
+        <div className="player">
+          {player}
+        </div>
+        {countdown}
+        <h3 className='explanation'>An AI-powered cherades game! Created at UofT Hacks VI!</h3>
         <Button variant='contained' color='primary' onClick={this.start}>Start game</Button>
         <h2>Become a ... {this.state.object}</h2>
         {/* <video id="recorder" className="video-js vjs-default-skin" /> */}
