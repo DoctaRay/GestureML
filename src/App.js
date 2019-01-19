@@ -91,7 +91,7 @@ class App extends Component {
   takePicture = async () => {
     const image = this.webcam.current.getScreenshot();
     const blob = image.substring(image.indexOf(',')+1);
-    const imageSrc = this.webcam.getScreenshot();
+    //const imageSrc = this.webcam.getScreenshot();
 
     try {
       const snapshot = await this.bucket.upload(blob, this.state.object);
@@ -138,7 +138,7 @@ class App extends Component {
         <Webcam
           audio={false}
           height={285}
-          ref={this.setRef}
+          ref={this.webcam}
           screenshotFormat="image/jpeg"
           width={500}
           videoConstraints={videoConstraints}
@@ -154,6 +154,7 @@ class App extends Component {
     }
 
     if (this.state.worldTimer == 0) {
+      this.takePicture();
       clearInterval(some);
     }
 
